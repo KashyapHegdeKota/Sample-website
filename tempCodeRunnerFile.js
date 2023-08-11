@@ -1,0 +1,1 @@
+/admin/users/:username/leaves

@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=960px" />
+  <title>Attendance Tracker Dashboard</title>
+  <script src="script.js"></script>
+  <style>
+    /* Add your CSS styles here */
+    body {
+      max-width: 1920px;
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 10px;
+      background-image: url(eportal-visual-artwork.svg);
+      background-repeat: no-repeat;
+      background-size:cover;  
+    }
+
+    .content {
+      margin-top: 80px;
+    }
+
+    h1 {
+      color: #333;
+      margin: 0;
+      padding: 10px 0;
+      text-align: center;
+    }
+
+    .user-details {
+      margin-top: 10px;
+      border: 1px solid #333;
+      border-radius: 5px;
+      padding: 0px;
+      background-color: #fab75a;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-details h2 {
+      font-size: 20px;
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    .user-details p {
+      font-size: 16px;
+      margin: 5px 0;
+    }
+
+    .user-details strong {
+      font-weight: bold;
+    }
+
+
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 10px;
+      position: fixed;
+      top:100px;
+      left:100px
+      
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color:#f1eeee;
+      padding: 15px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+    }
+
+    .navbar-logo img {
+      height: 70px;
+      width: auto;
+    }
+
+    .navbar ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar li {
+      margin-right: 10px;
+    }
+
+    .navbar a {
+      text-decoration: none;
+      color: #333;
+      padding: 5px;
+      border-radius: 5px;
+    }
+    
+    .navbar a:hover {
+      background-color: #333;
+      color: #fff;
+    }
+
+    .content {
+      text-align: center;
+    }
+
+    .content h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .content p {
+      font-size: 16px;
+      text-align: center;
+    }
+
+
+    .checkin-button {
+      position:fixed;
+      top:350px;
+      left:225px;
+      background-color: #3cb89b;
+      color: #fff;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      border: #333;
+      width: 150px;
+      height: 70px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.3s ease;
+      position: fixed;
+      bottom: 40px;
+      right: 40px;
+    }
+
+    .checkin-button.checked {
+      background-color: red;
+    }
+
+    .checkin-button::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+      opacity: 0;
+    }
+
+    .checkin-button:hover::before {
+      opacity: 1;
+    }
+
+    .checkin-icon {
+      font-size: 32px;
+    }
+
+    .checkin-label {
+      margin-top: 5px;
+    }
+
+    .checkin-timer {
+      font-size: 14px;
+      margin-top: 5px;
+    }
+    
+
+    .daily-quote h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .daily-quote p {
+      font-family: "Lucida Handwriting";
+      font-size: 25px;
+      color: #333;
+    }
+  
+    .center{
+      margin:0;
+      position:absolute;
+      left:45%;
+
+    }
+    .cp{
+      position:fixed;
+    }
+    .box{
+      margin: auto;
+      position:fixed;
+      top:250px;
+      left:200px;
+      width: 400px;
+      height: 300px;
+      padding: 10px;
+      border: 5px solid lightgrey;
+    }
+    .box1{
+      margin:auto;
+      position:fixed;
+      top:250px;
+      left:1000px;
+      width:400px;
+      height:300px;
+      padding:10px;
+      border:5px solid lightgrey;
+    }
+    .box2{
+      margin:auto;
+      position:fixed;
+      left:1250px;
+      width:100px;
+      height:100px;
+      padding:10px;
+      border:5px solid lightgrey;
+    }
+    button{
+      position:fixed;
+      font-size:15px;
+      border-radius: 8px;
+      font-weight: bold;
+      background-color: white;
+      top:350px;
+      left:450px;
+      width:150px;
+      height:70px;
+    }
+    p1{
+      position:fixed;
+      font-family: var(--fontbold);
+      font-weight: var(--fontbold_weight);
+      font-size: 36px;
+      letter-spacing: 1px;
+      top:450px;
+      left:300px;
+    }
+    .box h2{
+      position:fixed;
+      top:500px;
+      left: 350px; 
+    }
+    .selected-date {
+        background-color: #3498db;
+        color: #fff;
+      }
+
+      .hours-display {
+        font-size: 12px;
+        margin-top: 5px;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+
+      .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+      }
+
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+  </style>
+</head>
+
+<body>
+  
+    <div class="header">
+     
+    </div>
+    <div class="navbar">
+      <div class="navbar-logo">
+        <div class="logo">
+          <a href="https://erithme.com"><img src="logo.png" alt="Logo" /></a>
+        </div>
+      </div>
+
+      <ul>  
+        <li><a href="/leaves">Leaves</a></li>
+        <li><a href="/reports">Report</a></li>
+        <li><a href="/calendar">Calendar</a></li>
+        <li><a id="logoutLink" href="/logout">Logout</a></li>
+      </ul>
+      
+      
+    </div>
+    <div class="content">
+      <h1>Welcome to Erith AMS</h1>
+      
+      <h2>ERITH0022 Poonam R Gogikar</h2>
+    </div>
+    
+    
+      
+
+  </div>
+
+  <div class ="box">
+    <h1 >Attendance</h1>
+    <button id="takeBreakButton" >Break</button>
+    <div class="checkin-button" id="checkInOutButton">
+      <div class="checkin-label">Check-In</div>
+      
+    </div>
+    <p1>00:00:00 Hrs</p1>
+    <h2 align = "justify">11 Aug 2023</h2>
+  </div>
+  <div class="box1">
+    <h1>Apply for Leave</h1>      
+    <div class="leave-selection">
+      <label for="dateRange">Select Date Range:</label>
+      <input type="date" id="startDate" style="margin-top:20px;" />
+      <label for="endDate">to</label>
+      <input type="date" id="endDate" style = "margin-bottom:20px;"/>
+      
+      <label for="leaveType" style="margin-bottom:25px;">Leave Type:</label>
+      <select id="leaveType" style="margin-bottom:35px;">
+        <option value="">Choose Leave Type</option>
+        <option value="Present">Present</option>
+        <option value="Annual Leave">Annual Leave</option>
+        <option value="Compassionate Leave">Compassionate Leave</option>
+        <option value="Sick Leave">Sick Leave</option>
+      </select>
+      <br>
+      <label for = "leaveReason">Leave reason:</label>
+      <br>
+      <textarea fieldtype="3" rows = "5"style="width:400px"></textarea>
+    </div>
+
+  </div>
+  </div>
+
+  <script>
+    const userDetails = {
+      username: "kkhegde",
+      userID: "12345",
+      fullName: "Kashyap H Kota",
+      employeeID: "EMP123",
+      shiftTimings: "9:00-17:00",
+    };
+  
+    function updateUserDetails() {
+      document.getElementById("username").textContent = userDetails.username;
+      document.getElementById("userID").textContent = userDetails.userID;
+      document.getElementById("employeeID").textContent = userDetails.employeeID;
+      document.getElementById("shiftTimings").textContent = userDetails.shiftTimings;
+    }
+  
+    window.addEventListener("DOMContentLoaded", updateUserDetails);
+  
+    const checkInOutButton = document.getElementById("checkInOutButton");
+    let lastCheckInTime = sessionStorage.getItem("lastCheckInTime");
+    let isChecked = false;
+    let timerInterval;
+  
+    function updateCheckInOutButtonContent() {
+      if (isChecked) {
+        const currentTime = new Date();
+        const timeDifference = Math.abs(currentTime - new Date(lastCheckInTime));
+        const totalSeconds = Math.floor(timeDifference / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+  
+        document.getElementById("checkInOutButton").innerHTML =
+          '<div class="checkin-icon"></div><div class="checkin-label">Check-Out</div>' +
+          '<div class="checkin-timer">' + formatTime(hours, minutes, seconds) + "</div>";
+      } else {
+        document.getElementById("checkInOutButton").innerHTML =
+          '<div class="checkin-icon"></div><div class="checkin-label">Check-In</div>' +
+          '<div class="checkin-timer">00:00:00</div>';
+      }
+    }
+  
+    function startTimer() {
+      console.log("Timer started");
+      lastCheckInTime = new Date().toISOString();
+      sessionStorage.setItem("lastCheckInTime", lastCheckInTime);
+      isChecked = true;
+      timerInterval = setInterval(updateCheckInOutButtonContent, 1000);
+      updateCheckInOutButtonContent();
+    }
+  
+    function stopTimer() {
+      isChecked = false;
+      clearInterval(timerInterval);
+      updateCheckInOutButtonContent();
+      lastCheckInTime = null;
+      sessionStorage.removeItem("lastCheckInTime");
+    }
+  
+    checkInOutButton.addEventListener("click", function () {
+      if (isChecked) {
+        stopTimer();
+      } else {
+        startTimer();
+      }
+    });
+  
+    const takeBreakButton = document.getElementById("takeBreakButton");
+    let breakStartTime = sessionStorage.getItem("breakStart");
+    let isOnBreak = false;
+    let breakInterval;
+  
+    function updateBreakTimer() {
+      if (isOnBreak) {
+        const currentTime = new Date();
+        const timeDifference = Math.abs(currentTime - new Date(breakStartTime));
+        const totalSeconds = Math.floor(timeDifference / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+  
+        document.getElementById("checkInOutButton").innerHTML =
+          '<div class="checkin-label">⏸On Break</div>' +
+          '<div class="checkin-timer">' + formatTime(hours, minutes, seconds) + "</div>";
+      }
+    }
+  
+    function startBreakTimer() {
+    breakStartTime = new Date().toISOString();
+    sessionStorage.setItem("breakStart", breakStartTime);
+    updateBreakTimer();
+    isOnBreak = true;
+  
+    // Pause the check-in timer
+    if (timerInterval) {
+      clearInterval(timerInterval);
+    }
+  
+    // Create a new timer interval for the break timer
+    breakInterval = setInterval(updateBreakTimer, 1000);
+  }
+  
+  function stopBreakTimer() {
+    isOnBreak = false;
+    updateCheckInOutButtonContent();
+  
+    // Clear the break timer interval
+    clearInterval(breakInterval);
+  
+    // If the check-in timer was running, resume it
+    if (timerInterval) {
+      timerInterval = setInterval(updateCheckInOutButtonContent, 1000);
+    }
+  
+    sessionStorage.removeItem("breakStart");
+  }
+  
+  
+    function formatTime(hours, minutes, seconds) {
+      return (
+        (hours < 10 ? "0" : "") + hours + ":" +
+        (minutes < 10 ? "0" : "") + minutes + ":" +
+        (seconds < 10 ? "0" : "") + seconds
+      );
+    }
+  
+    takeBreakButton.addEventListener("click", function () {
+      if (isOnBreak) {
+        stopBreakTimer();
+        takeBreakButton.textContent = "Break";
+      } else {
+        startBreakTimer();
+        takeBreakButton.textContent = "End Break";
+      }
+    });
+      // Listen for the visibilitychange event
+  window.addEventListener("visibilitychange", function () {
+    // If the page is hidden
+    if (document.hidden) {
+      // Store the current timer value in local storage
+      sessionStorage.setItem("timerValue", timerInterval);
+      // Also store the current time
+      sessionStorage.setItem("lastCheckInTime", new Date().toISOString());
+    } else {
+      // Restore the timer value from local storage
+      const timerValue = sessionStorage.getItem("timerValue");
+      if (timerValue) {
+        timerInterval = timerValue;
+        // Also restore the last check-in time
+        const lastCheckInTime = sessionStorage.getItem("lastCheckInTime");
+        if (lastCheckInTime) {
+          updateCheckInOutButtonContent();
+        }
+      }
+    }
+  });
+
+    // When the page is unloaded, store the current timer value in local storage
+  window.addEventListener("beforeunload", function () {
+    sessionStorage.setItem("timerValue", timerInterval);
+  });
+
+  const quotes = [
+    `"The only way to do great work is to love what you do." - Steve Jobs`,
+    `"Success is not final, failure is not fatal: It is the courage to continue that counts." - Winston Churchill`,
+    `"Your time is limited, don't waste it living someone else's life." - Steve Jobs`,
+    `"Believe you can and you're halfway there." - Theodore Roosevelt`,
+    `"The future depends on what you do today." - Mahatma Gandhi`,
+    `"It does not matter how slowly you go, as long as you do not stop." - Confucius`,
+  ];
+
+  // Function to get a random quote from the quotes array
+  function getRandomQuote() {
+    return quotes[Math.floor(Math.random() * quotes.length)];
+  }
+
+  // Display a random quote
+  function displayRandomQuote() {
+    const quoteElement = document.getElementById("quote");
+    if (quoteElement) {
+      quoteElement.textContent = getRandomQuote();
+    }
+  }
+
+  displayRandomQuote();
+
+  // Update the displayed quote daily
+  function updateDailyQuote() {
+    displayRandomQuote();
+  }
+
+  // Schedule the updateDailyQuote function to run every 24 hours
+  setInterval(updateDailyQuote, 24 * 60 * 60 * 1000);
+  </script>
+    
+</body>
+
+</html>

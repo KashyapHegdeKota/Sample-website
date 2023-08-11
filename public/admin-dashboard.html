@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+    <style>
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+
+      .user-reports-table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #ddd;
+        margin-top: 20px;
+      }
+
+      .user-reports-table th,
+      .user-reports-table td {
+        padding: 10px;
+        border: 1px solid #ddd;
+      }
+
+      .user-reports-table th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+        text-align: left;
+      }
+
+      .user-reports-table tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      .user-reports-table tr:hover {
+        background-color: #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Admin Dashboard</h1>
+      <table class="user-reports-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Date</th>
+            <th>Report</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>User 1</td>
+            <td>2023-07-01</td>
+            <td>
+              <button
+                class="download-button"
+                data-user="User 1"
+                data-date="2023-07-01"
+              >
+                Download
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td>User 2</td>
+            <td>2023-07-02</td>
+            <td>
+              <button
+                class="download-button"
+                data-user="User 2"
+                data-date="2023-07-02"
+              >
+                Download
+              </button>
+            </td>
+          </tr>
+
+          <!-- Add more rows for other users and dates -->
+        </tbody>
+      </table>
+    </div>
+    <script>
+      // Handle download button clicks
+      document.addEventListener("DOMContentLoaded", function () {
+        const downloadButtons = document.querySelectorAll(".download-button");
+
+        downloadButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            const user = this.getAttribute("data-user");
+            const date = this.getAttribute("data-date");
+            const reportContent =
+              this.parentElement.previousElementSibling.textContent +
+              "\n\n* User: " +
+              user +
+              "\n* Hours checked in: " +
+              getHoursCheckedIn(user, date) +
+              "\n* Minutes on break: " +
+              getMinutesOnBreak(user, date);
+
+            alert(reportContent);
+          });
+        });
+      });
+
+      // Convert string to ArrayBuffer
+      function s2ab(s) {
+        const buf = new ArrayBuffer(s.length);
+        const view = new Uint8Array(buf);
+        for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
+        return buf;
+      }
+      function getHoursCheckedIn(user, date) {
+        const checkInTimes = localStorage.getItem(
+          user + "-" + date + "-checkInTimes"
+        );
+        if (!checkInTimes) {
+          return 0;
+        }
+
+        const checkInTimesArray = JSON.parse(checkInTimes);
+        const totalTimeCheckedIn = 0;
+
+        for (const checkInTime of checkInTimesArray) {
+          const nextCheckInTime =
+            checkInTimesArray[checkInTimesArray.indexOf(checkInTime) + 1];
+          if (!nextCheckInTime) {
+            break;
+          }
+
+          const timeDifference = Math.abs(
+            new Date(nextCheckInTime) - new Date(checkInTime)
+          );
+          const totalSeconds = Math.floor(timeDifference / 1000);
+          const hours = Math.floor(totalSeconds / 3600);
+
+          totalTimeCheckedIn += hours;
+        }
+
+        return totalTimeCheckedIn;
+      }
+
+      function getMinutesOnBreak(user, date) {
+        const breakStartTimes = localStorage.getItem(
+          user + "-" + date + "-breakStartTimes"
+        );
+        if (!breakStartTimes) {
+          return 0;
+        }
+
+        const breakStartTimesArray = JSON.parse(breakStartTimes);
+        const totalTimeOnBreak = 0;
+
+        for (const breakStartTime of breakStartTimesArray) {
+          const breakEndTime =
+            breakStartTimesArray[
+              breakStartTimesArray.indexOf(breakStartTime) + 1
+            ];
+          if (!breakEndTime) {
+            break;
+          }
+
+          const timeDifference = Math.abs(
+            new Date(breakEndTime) - new Date(breakStartTime)
+          );
+          const totalSeconds = Math.floor(timeDifference / 1000);
+          const minutes = Math.floor(totalSeconds / 60);
+
+          totalTimeOnBreak += minutes;
+        }
+
+        return totalTimeOnBreak;
+      }
+    </script>
+  </body>
+</html>

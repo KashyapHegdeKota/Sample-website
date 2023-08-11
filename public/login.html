@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=960px" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <title>Login</title>
+    <style>
+      body {
+        font-family: "Times New Roman", Times, serif;
+        background-color: #ffff;
+        background-image: url(Untitled\ design.gif);
+        background-size: cover;
+      }
+
+      .container {
+        position: absolute;
+        top: 200px;
+        left: 200px;
+        min-height: 500px;
+        min-width: 350px;
+        margin: 10px auto;
+        padding: 20px;
+        border-radius: 5px;
+      }
+      h1 {
+        text-align: center;
+      }
+      label {
+        display: block;
+        margin-bottom: 10px;
+      }
+      input[type="text"],
+      input[type="password"] {
+        width: 100%;
+        padding: 25px;
+        margin-bottom: 20px;
+        border: 1px solid #000000;
+        border-radius: 4px;
+      }
+      button {
+        background-color: #4caf50;
+        color: white;
+        padding: 20px 20px;
+        border: black;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+      }
+      .error-message {
+        color: red;
+        margin-bottom: 10px;
+      }
+      .register-link {
+        text-align: center;
+        margin-top: 10px;
+      }
+      .logo {
+        text-align: center;
+        position: absolute;
+        top: 50px;
+        left: 30px;
+      }
+      .icon {
+        padding: 10px;
+        background: dodgerblue;
+        color: white;
+        min-width: 50px;
+        text-align: center;
+      }
+      h2 {
+        position: absolute;
+        top: 120px;
+        left: 40px;
+        font-size: 16px;
+        color: black;
+      }
+      .input-container {
+        position: relative;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Solutions For A Sustainable Future</h2>
+    <div class="logo">
+      <a href="https://erithme.com/" target="_blank">
+        <img src="logo.png" alt="Logo" width="250" />
+      </a>
+    </div>
+    <div class="background-image"></div>
+    <div class="container">
+      <h1>Welcome to Erith Group</h1>
+      <form id="loginForm">
+        <div class="input-container">
+          <input type="text" id="username" placeholder="Username: " required />
+
+          <label for="password"></label>
+          <input
+            type="password"
+            id="password"
+            placeholder="Password: "
+            required
+          />
+        </div>
+
+        <button type="submit">Login</button>
+        <p class="error-message" id="errorMessage"></p>
+      </form>
+      <div class="register-link">
+        Don't have an account? <a href="/register.html">Register here</a>
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          // Retrieve the entered username and password
+          var username = document.getElementById("username").value;
+          var password = document.getElementById("password").value;
+
+          // Perform basic client-side validation
+          if (username.trim() === "" || password.trim() === "") {
+            document.getElementById("errorMessage").textContent =
+              "Please enter a valid username and password.";
+            return;
+          }
+
+          // Make an API request to the backend server for authentication
+          // Replace the URL with your actual backend API endpoint
+          fetch("/api/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username: username,
+              password: password,
+            }),
+          })
+            .then(function (response) {
+              if (response.ok) {
+                response.json().then(function (data) {
+                  if (data.success && username === "admin") {
+                    // Redirect to the admin dashboard
+                    window.location.href = "/admin";
+                  } else {
+                    // Redirect to the regular user dashboard
+                    window.location.href = "/dashboard";
+                  }
+                });
+              } else {
+                // Authentication failed, display error message
+                document.getElementById("errorMessage").textContent =
+                  "Invalid username or password.";
+              }
+            })
+            .catch(function (error) {
+              // Error occurred during API request
+              document.getElementById("errorMessage").textContent =
+                "An error occurred during login. Please try again later.";
+            });
+        });
+    </script>
+  </body>
+</html>

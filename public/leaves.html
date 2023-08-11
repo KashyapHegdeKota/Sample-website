@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Leaves Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body {
+        font-family: "Times New Roman", Times, serif;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        position: relative;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f8f8f8;
+        padding: 10px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+      }
+
+      .navbar-logo img {
+        height: 28px;
+        width: auto;
+      }
+
+      .navbar ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+      }
+
+      .navbar li {
+        margin-right: 10px;
+      }
+
+      .navbar a {
+        text-decoration: none;
+        color: #333;
+        padding: 5px;
+        border-radius: 5px;
+      }
+
+      .navbar a:hover {
+        background-color: #333;
+        color: #fff;
+      }
+
+      .content {
+        text-align: center;
+      }
+
+      .content h2 {
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+
+      .content p {
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>Leaves Dashboard</h1>
+        </div>
+        <div class="navbar">
+          <div class="navbar-logo">
+            <div class="logo">
+              <a href="https://erithme.com"
+                ><img src="logo.png" alt="Logo"
+              /></a>
+            </div>
+          </div>
+          <ul>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/reports">Report</a></li>
+            <li><a href="/calendar">Calendar</a></li>
+            <li><a id="logoutLink" href="/logout">Logout</a></li>
+          </ul>
+        </div>
+        <div class="leaves-container">
+          <h2>Leaves</h2>
+          <p id="leavesCount">Loading...</p>
+        </div>
+        <canvas id="barGraph" width="400" height="200"></canvas>
+      </div>
+      <script>
+        function fetchLeavesCount() {
+          fetch("/api/leaves", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then(function (response) {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.json();
+            })
+            .then(function (data) {
+              if (data.success) {
+                document.getElementById("leavesCount").textContent =
+                  data.leaves + " leaves left";
+              } else {
+                document.getElementById("leavesCount").textContent =
+                  "Failed to fetch leaves count";
+              }
+            })
+            .catch(function (error) {
+              document.getElementById("leavesCount").textContent =
+                "An error occurred: " + error.message;
+            });
+        }
+        fetchLeavesCount();
+        const data = {
+          labels: [
+            "Annual Leaves",
+            "Compassionate Leaves",
+            "Sick Leaves",
+            "Wellness Leaves",
+          ],
+          datasets: [
+            {
+              label: "Leaves",
+              data: [15, 15, 7, 3],
+              backgroundColor: "rgba(54, 162, 235, 0.6)",
+              borderColor: "rgba(54, 162, 235, 1)",
+              borderWidth: 1,
+            },
+          ],
+        };
+        const config = {
+          type: "bar",
+          data: data,
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+              },
+            },
+          },
+        };
+        const barGraphCanvas = document.getElementById("barGraph");
+
+        new Chart(barGraphCanvas, config);
+      </script>
+    </body>
+  </body>
+</html>

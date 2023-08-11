@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=960px" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Attendance Tracker Dashboard</title>
+    <style>
+      /* Add your CSS styles here */
+      body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 10px;
+      }
+      .content {
+    margin-top: 80px;
+  }
+
+  h1 {
+    color: #3498db;
+    margin: 0;
+    padding: 10px 0;
+  }
+  
+  .user-details {
+    margin-top: 30px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .user-details h2 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 15px;
+  }
+
+  .user-details p {
+    font-size: 16px;
+    margin: 5px 0;
+  }
+
+  .user-details strong {
+    font-weight: bold;
+  }
+
+
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        position: relative;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f8f8f8;
+        padding: 5px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+      }
+
+      .navbar-logo img {
+        height: 28px;
+        width: auto;
+      }
+
+      .navbar ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+      }
+
+      .navbar li {
+        margin-right: 10px;
+      }
+
+      .navbar a {
+        text-decoration: none;
+        color: #333;
+        padding: 5px;
+        border-radius: 5px;
+      }
+
+      .navbar a:hover {
+        background-color: #333;
+        color: #fff;
+      }
+
+      .content {
+        text-align: center;
+      }
+
+      .content h2 {
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+
+      .content p {
+        font-size: 16px;
+        text-align: center;
+      }
+
+     
+  /* Update styles for the check-in button */
+  .checkin-button {
+    background-color: #3498db;
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 50%;
+    width: 140px;
+    height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+  }
+
+  .checkin-button.checked {
+    background-color: #e74c3c;
+  }
+
+  .checkin-button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    opacity: 0;
+  }
+
+  .checkin-button:hover::before {
+    opacity: 1;
+  }
+
+  .checkin-icon {
+    font-size: 32px;
+  }
+
+  .checkin-label {
+    margin-top: 5px;
+  }
+
+  .checkin-timer {
+    font-size: 14px;
+    margin-top: 5px;
+  }
+  </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Attendance Tracker Dashboard</h1>
+      </div>
+      <div class="navbar">
+        <div class="navbar-logo">
+          <div class="logo">
+            <a href="https://erithme.com"><img src="logo.png" alt="Logo" /></a>
+          </div>
+        </div>
+
+        <ul>
+          <li><a href="/leaves">Leaves</a></li>
+          <li><a href="/reports">Report</a></li>
+          <li><a href="/calendar">Calendar</a></li>
+          <li><a id="logoutLink" href="/logout">Logout</a></li>
+        </ul>
+
+        <div class="checkin-button" id="checkInOutButton">
+          <div class="checkin-icon">✓</div>
+          <div class="checkin-label">Check-In</div>
+          <div class="checkin-timer">00:00:00</div>
+        </div>
+      </div>
+      <div class="content">
+        <h2>Welcome to the Dashboard</h2>
+        <p>
+          Here you can view and manage attendance, leaves, and generate reports.
+        </p>
+      </div>
+      <div class="user-details">
+        <h2>User Details</h2>
+        <p><strong>Username:</strong> <span id="username"></span></p>
+        <p><strong>User ID:</strong> <span id="userID"></span></p>
+        <p><strong>Full Name:</strong> <span id="fullName"></span></p>
+        <p><strong>Employee ID:</strong> <span id="employeeID"></span></p>
+      </div>
+    </div>
+
+    </div>
+    
+    <script>
+        const userDetails = JSON.parse('<%- JSON.stringify(userDetails) %>');
+
+// Function to update the user details on the page
+function updateUserDetails() {
+  document.getElementById("username").textContent = userDetails.username;
+  document.getElementById("userID").textContent = userDetails.userID;
+  document.getElementById("fullName").textContent = userDetails.fullName;
+  document.getElementById("employeeID").textContent = userDetails.employeeID;
+}
+
+// Load the user details when the page is loaded
+window.addEventListener("DOMContentLoaded", updateUserDetails);
+
+      var checkInOutButton = document.getElementById("checkInOutButton");
+      var lastCheckInTime = null;
+      var isChecked = false;
+      var timerInterval; // Variable to hold the interval reference for the timer
+
+      // Function to update the last check-in time on the button
+      function updateCheckInOutButtonContent() {
+        if (isChecked) {
+          // Check-Out state
+          var currentTime = new Date();
+          var timeDifference = Math.abs(currentTime - lastCheckInTime);
+          var minutes = Math.floor(timeDifference / 1000 / 60);
+          var seconds = Math.floor((timeDifference / 1000) % 60);
+          var hours = Math.floor(minutes / 60);
+          minutes %= 60;
+
+          var formattedTime =
+            (hours < 10 ? "0" : "") +
+            hours +
+            ":" +
+            (minutes < 10 ? "0" : "") +
+            minutes +
+            ":" +
+            (seconds < 10 ? "0" : "") +
+            seconds;
+
+          document.getElementById("checkInOutButton").innerHTML =
+            '<div class="checkin-icon">✓</div><div class="checkin-label">Check-Out</div>' +
+            '<div class="checkin-timer">' +
+            formattedTime +
+            "</div>";
+        } else {
+          // Check-In state
+          document.getElementById("checkInOutButton").innerHTML =
+            '<div class="checkin-icon">✓</div><div class="checkin-label">Check-In</div>' +
+            '<div class="checkin-timer">00:00:00</div>';
+        }
+      }
+
+      // Load the last check-in time when the page is loaded
+      window.addEventListener("DOMContentLoaded", function () {
+        lastCheckInTime = localStorage.getItem("lastCheckInTime");
+        if (lastCheckInTime) {
+          lastCheckInTime = new Date(lastCheckInTime);
+          isChecked = true;
+          updateCheckInOutButtonContent();
+
+          // Start the timer if the user is already checked-in
+          timerInterval = setInterval(updateCheckInOutButtonContent, 1000); // Update every second (1000 milliseconds)
+        }
+      });
+
+      checkInOutButton.addEventListener("click", function () {
+        isChecked = !isChecked;
+
+        if (isChecked) {
+          // Perform check-in logic
+          checkInOutButton.classList.add("checked");
+          updateCheckInOutButtonContent();
+
+          // Store the last check-in time in local storage
+          lastCheckInTime = new Date();
+          localStorage.setItem("lastCheckInTime", lastCheckInTime);
+
+          // Start the timer
+          timerInterval = setInterval(updateCheckInOutButtonContent, 1000); // Update every second (1000 milliseconds)
+
+          //Generate the calendar data
+          generateCalendarDaysWithAttendance();
+        } else {
+          // Perform check-out logic
+          checkInOutButton.classList.remove("checked");
+          updateCheckInOutButtonContent();
+
+          // Clear the last check-in time from local storage
+          lastCheckInTime = null;
+          localStorage.removeItem("lastCheckInTime");
+
+          // Stop the timer
+          clearInterval(timerInterval);
+          generateCalendarDaysWithAttendance();
+        }
+      });
+
+     
+    </script>
+  </body>
+</html>

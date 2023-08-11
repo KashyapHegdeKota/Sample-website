@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Register</title>
+    <style>
+      /* Add your CSS styles here */
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      h1 {
+        text-align: center;
+      }
+      label {
+        display: block;
+        margin-bottom: 10px;
+      }
+      input[type="text"],
+      input[type="password"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      button {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+      }
+      .error-message {
+        color: red;
+        margin-bottom: 10px;
+      }
+      .login-link {
+        text-align: center;
+        margin-top: 10px;
+      }
+      .logo {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="logo">
+        <a href="https://erithme.com/" target="_blank">
+          <img src="logo.png" alt="Erith Logo" width="150" />
+        </a>
+      </div>
+      <h1>Register</h1>
+      <form id="registerForm" action="/api/register" method="POST">
+        <label for="username">Username:</label>
+        <input type="text" id="username" required />
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" required />
+        <label for="confirmPassword">Confirm Password:</label>
+        <input type="password" id="confirmPassword" required />
+
+        <button type="submit">Register</button>
+        <p class="error-message" id="errorMessage"></p>
+      </form>
+      <div class="login-link">
+        Already have an account? <a href="/login.html">Login here</a>
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("registerForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          // Retrieve the entered username and password
+          var username = document.getElementById("username").value;
+          var password = document.getElementById("password").value;
+          var confirmPassword =
+            document.getElementById("confirmPassword").value;
+
+          // Check if the passwords match
+          if (password !== confirmPassword) {
+            document.getElementById("errorMessage").textContent =
+              "Passwords do not match. Please try again.";
+            return;
+          }
+
+          // Perform basic client-side validation
+          if (username.trim() === "" || password.trim() === "") {
+            document.getElementById("errorMessage").textContent =
+              "Please enter a valid username and password.";
+            return;
+          }
+
+          // Make an API request to the backend server for registration
+          // Replace the URL with your actual backend API endpoint
+          fetch("/api/register", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username: username,
+              password: password,
+              confirmPassword: confirmPassword,
+            }),
+          })
+            .then(function (response) {
+              if (response.ok) {
+                // Registration successful, redirect to the login page
+                window.location.href = "/login.html";
+              } else {
+                // Registration failed, display error message
+                document.getElementById("errorMessage").textContent =
+                  "Registration failed. Please try again.";
+              }
+            })
+            .catch(function (error) {
+              // Error occurred during API request
+              document.getElementById("errorMessage").textContent =
+                "An error occurred during registration. Please try again later.";
+            });
+        });
+    </script>
+  </body>
+</html>

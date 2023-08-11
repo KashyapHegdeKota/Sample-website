@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Calendar Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body {
+        font-family: "Times New Roman", Times, serif;
+        margin: 0;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        position: relative;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f8f8f8;
+        padding: 7px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+      }
+
+      .navbar-logo img {
+        height: 28px;
+        width: auto;
+      }
+
+      .navbar ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+      }
+
+      .navbar li {
+        margin-right: 10px;
+      }
+
+      .navbar a {
+        text-decoration: none;
+        color: #333;
+        padding: 5px;
+        border-radius: 5px;
+      }
+
+      .navbar a:hover {
+        background-color: #333;
+        color: #fff;
+      }
+
+      .content {
+        text-align: center;
+      }
+
+      .content h2 {
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+
+      .content p {
+        font-size: 16px;
+      }
+
+      .calendar-container {
+        margin-top: 70px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .calendar-header {
+        display: flex;
+        align-items: center;
+      }
+
+      .btn {
+        font-size: 18px;
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        outline: none;
+      }
+
+      .calendar-days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 10px;
+        margin-top: 30px;
+      }
+
+      .calendar-day {
+        text-align: center;
+        border: 1px solid #ddd;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .prev-month,
+      .next-month {
+        color: #bbb;
+      }
+
+      .calendar-day:hover {
+        background-color: #f2f2f2;
+      }
+
+      .dropdown-menu {
+        margin-top: 5px;
+      }
+
+      /* Adjust the height of the dropdown to fit the options */
+      .dropdown-menu select {
+        height: auto;
+      }
+
+      /* Styles for the progress bar */
+      .progress-bar-container {
+        background-color: #f2f2f2;
+        height: 5px;
+        border-radius: 2px;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background-color: #4caf50;
+        border-radius: 2px;
+      }
+
+      .selected-date {
+        background-color: #3498db;
+        color: #fff;
+      }
+
+      .hours-display {
+        font-size: 12px;
+        margin-top: 5px;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+
+      .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+      }
+
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Calendar Dashboard</h1>
+      </div>
+      <div class="navbar">
+        <div class="navbar-logo">
+          <div class="logo">
+            <a href="https://erithme.com"><img src="logo.png" alt="Logo" /></a>
+          </div>
+        </div>
+        <ul>
+          <li><a href="/dashboard">Dashboard</a></li>
+          <li><a href="/reports">Report</a></li>
+          <li><a href="/leaves">Leaves</a></li>
+          <li><a id="logoutLink" href="/logout">Logout</a></li>
+        </ul>
+      </div>
+      <label for="blockFridays">Block Fridays</label>
+      <input type="checkbox" id="blockFridays" />
+      <label for="blockSundays">Block Sundays</label>
+      <input type="checkbox" id="blockSundays" />
+      <div class="calendar-container">
+        <div class="calendar-header">
+          <button class="btn" onclick="prevMonth()">&#8249;</button>
+          <h2 id="currentMonth">July 2023</h2>
+          <button class="btn" onclick="nextMonth()">&#8250;</button>
+        </div>
+        <div class="calendar-days" id="calendarDays">
+          <!-- Days will be dynamically generated here -->
+        </div>
+        
+
+        <div id="myModal" class="modal">
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3 id="modalDate"></h3>
+            <p>Hours Checked-In: <span id="modalHours"></span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
